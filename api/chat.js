@@ -42,7 +42,7 @@ export default async function handler(req, res) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "GPT-6luna",
+          model: "openai/gpt-6-luna",
           messages: [
             {
               role: "system",
