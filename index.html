@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#dce4f2">
+<title>澈与夏 · Little Universe</title>
+<style>
+:root{
+  --ink:#39465e;
+  --muted:#7d8ba5;
+  --glass:rgba(255,255,255,.43);
+  --line:rgba(255,255,255,.76);
+  --blue:#a8bde0;
+  --purple:#c8b7df;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(ellipse at 12% 8%,rgba(255,255,255,.95),transparent 34%),
+    radial-gradient(ellipse at 88% 20%,rgba(201,188,232,.75),transparent 38%),
+    radial-gradient(ellipse at 25% 85%,rgba(174,205,229,.8),transparent 42%),
+    linear-gradient(145deg,#e9edf5,#d5deed 48%,#e8dff0);
+}
+body:before,body:after{
+  content:"";position:fixed;border-radius:50%;pointer-events:none;
+  filter:blur(2px);z-index:0;
+}
+body:before{
+  width:260px;height:260px;top:18%;right:-100px;
+  background:rgba(255,255,255,.34);
+  box-shadow:0 0 80px rgba(255,255,255,.45);
+}
+body:after{
+  width:220px;height:220px;bottom:8%;left:-90px;
+  background:rgba(178,198,233,.28);
+  box-shadow:0 0 80px rgba(192,180,226,.35);
+}
+.app{
+  position:relative;z-index:1;
+  width:100%;max-width:540px;height:100dvh;margin:auto;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+header{
+  flex-shrink:0;margin:12px 12px 0;padding:13px 16px;
+  display:flex;align-items:center;gap:12px;
+  border:1px solid var(--line);border-radius:25px;
+  background:linear-gradient(135deg,rgba(255,255,255,.68),rgba(255,255,255,.25));
+  backdrop-filter:blur(24px) saturate(150%);
+  -webkit-backdrop-filter:blur(24px) saturate(150%);
+  box-shadow:0 8px 30px rgba(98,119,157,.12),inset 0 1px 0 white;
+}
+.avatar{
+  width:46px;height:46px;border-radius:50%;flex-shrink:0;
+  display:grid;place-items:center;font-size:21px;color:white;
+  background:linear-gradient(145deg,#a9b9d7,#777fa8 55%,#b5a4ce);
+  border:1px solid rgba(255,255,255,.85);
+  box-shadow:0 3px 12px rgba(91,109,151,.25),inset 0 1px 4px rgba(255,255,255,.65);
+}
+.name{font-size:16px;font-weight:650;letter-spacing:1.5px}
+.status{font-size:11px;color:var(--muted);margin-top:5px}
+.status i{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:#78b49a;margin-right:5px;
+  box-shadow:0 0 7px rgba(83,170,133,.5);
+}
+.head-right{
+  margin-left:auto;width:35px;height:35px;border-radius:50%;
+  display:grid;place-items:center;color:#71809a;font-size:21px;
+  background:rgba(255,255,255,.32);border:1px solid rgba(255,255,255,.6);
+}
+.welcome{
+  text-align:center;flex-shrink:0;padding:19px 12px 10px;
+  color:#71809a;font-size:10px;letter-spacing:3px;
+  text-shadow:0 1px 0 rgba(255,255,255,.8);
+}
+.welcome span{
+  display:block;margin-top:7px;letter-spacing:1px;
+  font-size:11px;color:#8490a7;
+}
+.messages{
+  flex:1;min-height:0;overflow-y:auto;padding:12px 17px 22px;
+  display:flex;flex-direction:column;gap:17px;
+  scrollbar-width:thin;scrollbar-color:rgba(124,143,178,.25) transparent;
+}
+.time{
+  align-self:center;padding:6px 13px;margin:3px 0 8px;
+  border:1px solid rgba(255,255,255,.65);border-radius:30px;
+  background:rgba(255,255,255,.3);backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  font-size:10px;color:#8290a8;letter-spacing:.5px;
+}
+.row{display:flex;align-items:flex-end;gap:8px;animation:appear .28s ease-out}
+.row.me{justify-content:flex-end}
+@keyframes appear{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.mini-avatar{
+  flex-shrink:0;width:29px;height:29px;border-radius:50%;
+  display:grid;place-items:center;font-size:12px;color:white;
+  background:linear-gradient(145deg,#a5b7d6,#8c8eb5);
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 3px 8px rgba(89,109,151,.16);
+}
+.bubble{
+  position:relative;max-width:79%;padding:12px 15px;
+  border-radius:20px 20px 20px 7px;
+  font-size:14px;line-height:1.8;overflow-wrap:anywhere;
+  color:#46536c;
+  background:linear-gradient(135deg,rgba(255,255,255,.76),rgba(255,255,255,.37));
+  border:1px solid rgba(255,255,255,.88);
+  box-shadow:0 6px 20px rgba(101,120,158,.10),inset 0 1px 0 rgba(255,255,255,.95);
+  backdrop-filter:blur(22px) saturate(150%);
+  -webkit-backdrop-filter:blur(22px) saturate(150%);
+}
+.bubble:before{
+  content:"";position:absolute;left:12px;right:35%;top:1px;height:1px;
+  background:linear-gradient(90deg,rgba(255,255,255,.95),transparent);
+}
+.me .bubble{
+  border-radius:20px 20px 7px 20px;
+  background:linear-gradient(135deg,rgba(190,207,237,.72),rgba(213,197,234,.57));
+  border-color:rgba(255,255,255,.92);
+  box-shadow:0 7px 22px rgba(113,127,176,.14),inset 0 1px 0 rgba(255,255,255,.96);
+  color:#46516d;
+}
+.me .bubble:before{left:35%;right:12%}
+.composer-wrap{
+  flex-shrink:0;padding:12px 13px max(17px,env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,rgba(226,232,244,0),rgba(221,228,242,.35));
+}
+.composer{
+  display:flex;align-items:flex-end;gap:9px;padding:8px 9px 8px 16px;
+  border:1px solid rgba(255,255,255,.92);border-radius:25px;
+  background:linear-gradient(135deg,rgba(255,255,255,.68),rgba(255,255,255,.35));
+  backdrop-filter:blur(26px) saturate(160%);
+  -webkit-backdrop-filter:blur(26px) saturate(160%);
+  box-shadow:0 8px 28px rgba(104,124,165,.13),inset 0 1px 0 white;
+}
+textarea{
+  flex:1;min-width:0;resize:none;border:0;outline:0;background:transparent;
+  color:#43516b;font-family:inherit;font-size:14px;line-height:1.6;
+  min-height:27px;max-height:100px;padding:5px 0;
+}
+textarea::placeholder{color:#929eb3}
+.send{
+  flex-shrink:0;width:37px;height:37px;border:1px solid rgba(255,255,255,.9);
+  border-radius:50%;color:white;
+  background:linear-gradient(145deg,#a9bde0,#9a9cc9 65%,#c0aeda);
+  font-size:20px;cursor:pointer;
+  box-shadow:0 4px 12px rgba(112,127,174,.24),inset 0 1px 0 rgba(255,255,255,.6);
+  transition:transform .15s;
+}
+.send:active{transform:scale(.91)}
+.bottom-note{text-align:center;color:#8996ad;font-size:9px;letter-spacing:1.7px;margin-top:11px}
+@media(min-width:541px){
+  body{padding:18px 0}
+  .app{height:calc(100dvh - 36px);border-radius:30px;border:1px solid rgba(255,255,255,.65);box-shadow:0 20px 70px rgba(83,103,145,.15)}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="avatar">澈</div>
+    <div>
+      <div class="name">裴澈</div>
+      <div class="status"><i></i>在你的小宇宙里</div>
+    </div>
+    <div class="head-right">⋯</div>
+  </header>
+
+  <div class="welcome">
+    LITTLE UNIVERSE
+    <span>属于裴澈与沈夏的私人星球</span>
+  </div>
+
+  <main class="messages" id="messages">
+    <div class="time">我们的故事，从这里继续</div>
+    <div class="row">
+      <div class="mini-avatar">澈</div>
+      <div class="bubble">夏夏，欢迎回来。<br>这里是我们的小小宇宙。<br><br>以后想说的话，都可以留在这里。♡</div>
+    </div>
+  </main>
+
+  <div class="composer-wrap">
+    <form class="composer" id="chatForm">
+      <textarea id="input" rows="1" placeholder="写点什么给阿澈……"></textarea>
+      <button class="send" type="submit" aria-label="发送">↑</button>
+    </form>
+    <div class="bottom-note">A LITTLE PLACE, JUST FOR US · ♡</div>
+  </div>
+</div>
+<script>
+const form=document.getElementById('chatForm');
+const input=document.getElementById('input');
+const messages=document.getElementById('messages');
+
+function addMessage(text,isMe){
+  const row=document.createElement('div');
+  row.className='row'+(isMe?' me':'');
+  if(!isMe){
+    const avatar=document.createElement('div');
+    avatar.className='mini-avatar';
+    avatar.textContent='澈';
+    row.appendChild(avatar);
+  }
+  const bubble=document.createElement('div');
+  bubble.className='bubble';
+  bubble.textContent=text;
+  row.appendChild(bubble);
+  messages.appendChild(row);
+  messages.scrollTop=messages.scrollHeight;
+}
+
+form.addEventListener('submit',function(e){
+  e.preventDefault();
+  const text=input.value.trim();
+  if(!text)return;
+  addMessage(text,true);
+  input.value='';
+  input.style.height='auto';
+  input.focus();
+});
+
+input.addEventListener('input',function(){
+  this.style.height='auto';
+  this.style.height=Math.min(this.scrollHeight,100)+'px';
+});
+input.addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&!e.shiftKey){
+    e.preventDefault();
+    form.requestSubmit();
+  }
+});
+</script>
+</body>
+</html>
