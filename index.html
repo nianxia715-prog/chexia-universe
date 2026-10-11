@@ -215,16 +215,50 @@ function addMessage(text,isMe){
   messages.scrollTop=messages.scrollHeight;
 }
 
-form.addEventListener('submit',function(e){
-  e.preventDefault();
-  const text=input.value.trim();
-  if(!text)return;
-  addMessage(text,true);
-  input.value='';
-  input.style.height='auto';
-  input.focus();
-});
+const chatHistory = [];
 
+form.addEventListener('submit', async function(e){
+  e.preventDefault();
+
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMessage(text, true);
+  chatHistory.push({ role: 'user', content: text });
+
+  input.value = '';
+  input.style.height = 'auto';
+  input.focus();
+
+  const sendBtn = form.querySelector('button[type="submit"]');
+  if (sendBtn) sendBtn.disabled = true;
+
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: chatHistory })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || '请求失败');
+    }
+
+    chatHistory.push({ role: 'assistant', content: data.reply });
+    addMessage(data.reply, false);
+
+  } catch (error) {
+    chatHistory.pop();
+    addMessage('宝宝，我暂时没能回复你。我们检查一下接口配置，好不好？', false);
+    console.error('Chat error:', error);
+
+  } finally {
+    if (sendBtn) sendBtn.disabled = false;
+    input.focus();
+  }
+});
 input.addEventListener('input',function(){
   this.style.height='auto';
   this.style.height=Math.min(this.scrollHeight,100)+'px';
